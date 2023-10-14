@@ -27,3 +27,16 @@ print(f"Status = {page.status_code}")
 
 with open(f"{os.path.join(OUT_DIR, 'page.html')}", 'w', encoding="utf-8") as file_html:
 	file_html.write(soup.prettify())
+
+goodReviews = soup.find_all('div', class_='response good')
+index = 0
+for review in goodReviews:
+	title_rus = soup.find('a', class_="breadcrumbs__link").get_text()
+	title_eng = soup.find('div', class_='breadcrumbs__sub').get_text()
+	
+	text = review.find('table').find('p').get_text()
+	
+	file_path = os.path.join(OUT_DIR, "good", f"{index:04d}.txt")
+	with open(file_path, 'w', encoding="utf-8") as file:
+		file.write(f"{title_rus} ({title_eng})\n\n" + text)
+	index += 1
