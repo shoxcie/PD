@@ -2,23 +2,21 @@ from bs4 import BeautifulSoup
 import requests
 import os
 
-OUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "dataset"))
+DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "dataset"))
 try:
-	os.makedirs(os.path.join(OUT_DIR, "good"))
-	os.makedirs(os.path.join(OUT_DIR, "bad"))
+	os.makedirs(os.path.join(DATA_DIR, "good"))
+	os.makedirs(os.path.join(DATA_DIR, "bad"))
 except FileExistsError:
 	pass
 
 HOST = "https://www.kinopoisk.ru"
 URL = "https://www.kinopoisk.ru/film/535341/reviews/ord/date/status/good/perpage/10/"
 
+with open(os.path.join(DATA_DIR, "target", "spravka.txt"), 'r') as file_cookie_spravka:
+	cookie_spravka = file_cookie_spravka.read().rstrip()
+
 COOKIE = {
-	"spravka": (
-		"dD0xNjk3Mjc5NzY3O2k9MTg4LjEzOC4xODIuMTY5O0Q9MDBEMzg3NDA2QjVCRDg5MDVBNDcwMjUzOUQyNTNDOTA0QzYxN0FFM0IyRTlBRTU2Nz"
-		"A1QTQ5MzRDMkJGQTY0Qzk5M0FCQkU4NUU5NDc5OTZEODc1MTVFRDQ2MjVGQzY2QjU2MjI2RENDNDY2NTUyRkQwOEI4RkNBMUE5Q0JGMEIyRTM3"
-		"NkI1OTg4Qzg3MEJGRDg5Mzk3RkQ2OTcyOTA4NEMzMDE0ODlBN0QzQjJFMDBFQUY5QjdENjt1PTE2OTcyNzk3Njc3MTc5MDc0OTk7aD1mMzQzMD"
-		"NiY2ViNTI3NWZmZWEzYjY0ODllOTFhNzFiYg=="
-	)
+	"spravka": cookie_spravka
 }
 
 
@@ -41,7 +39,7 @@ while True:
 		print(f"[ERROR]: Page status code = {status}")
 		break
 	
-	with open(f"{os.path.join(OUT_DIR, 'page.html')}", 'w', encoding="utf-8") as file_html:
+	with open(f"{os.path.join(DATA_DIR, 'page.html')}", 'w', encoding="utf-8") as file_html:
 		file_html.write(soup.prettify())
 	
 	title_rus_soup = soup.find('a', class_="breadcrumbs__link")
@@ -62,7 +60,7 @@ while True:
 	
 	for review in goodReviews:
 		text = review.find('table').find('p').get_text()
-		file_path = os.path.join(OUT_DIR, "good", f"{review_index:04d}.txt")
+		file_path = os.path.join(DATA_DIR, "good", f"{review_index:04d}.txt")
 		with open(file_path, 'w', encoding="utf-8") as file:
 			file.write(f"{title_rus} ({title_eng})\n\n" + text)
 		review_index += 1
