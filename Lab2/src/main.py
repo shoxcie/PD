@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
+from random import randint
 import requests
 import os
+import time
 
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "dataset"))
 try:
@@ -29,6 +31,10 @@ def redirect():
 # Amount of request retries if ran into captcha
 RETRY_MAX_AMOUNT = 5
 
+# Delay between requests, seconds
+PAGE_DELAY = range(3, 12)
+RETRY_DELAY = range(0, 4)
+
 review_index = 0
 page_index = 1
 retry_index = 0
@@ -46,6 +52,7 @@ while True:
 	if not title_rus_soup:
 		retry_index += 1
 		print(f"[WARN]: Captcha at page #{page_index}, retrying ({retry_index}/{RETRY_MAX_AMOUNT})")
+		time.sleep(randint(RETRY_DELAY.start, RETRY_DELAY.stop))
 		if retry_index < RETRY_MAX_AMOUNT:
 			continue
 		else:
@@ -75,6 +82,7 @@ while True:
 		page_index += 1
 		URL = HOST + str(arr_href)
 		print(f"[LOG]: Jumping into page #{page_index}")
+		time.sleep(randint(PAGE_DELAY.start, PAGE_DELAY.stop))
 	else:
 		print("[LOG]: Successfully finished all pages!")
 		break
