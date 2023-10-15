@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from random import randint
+from fake_useragent import UserAgent
 import requests
 import os
 import time
@@ -14,25 +15,32 @@ except FileExistsError:
 HOST = "https://www.kinopoisk.ru"
 URL = "https://www.kinopoisk.ru/film/535341/reviews/ord/date/status/good/perpage/10/"
 
-with open(os.path.join(DATA_DIR, "target", "spravka.txt"), 'r') as file_cookie_spravka:
-	cookie_spravka = file_cookie_spravka.read().rstrip()
-
-COOKIE = {
-	"spravka": cookie_spravka
+HEADER = {
+	"User-Agent": UserAgent().googlechrome
 }
+
+COOKIE = {}
+with open(os.path.join(DATA_DIR, "target", "cookie.txt"), 'r') as file_cookies:
+	for line in file_cookies:
+		key, value = line.strip().split('=', 1)
+		COOKIE[key] = value
+
+session = requests.Session()
+session.headers.update(HEADER)
+session.cookies.update(COOKIE)
 
 
 def redirect():
-	page = requests.get(URL, cookies=COOKIE)
+	page = session.get(URL)
 	bs = BeautifulSoup(page.text, "html.parser")
 	return bs, page.status_code
 
 
 # Amount of request retries if ran into captcha
-RETRY_MAX_AMOUNT = 5
+RETRY_MAX_AMOUNT = 3
 
 # Delay between requests, seconds
-PAGE_DELAY = range(3, 12)
+PAGE_DELAY = range(0, 1)
 RETRY_DELAY = range(0, 4)
 
 review_index = 0
