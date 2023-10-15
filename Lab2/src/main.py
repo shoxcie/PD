@@ -20,7 +20,7 @@ HEADER = {
 }
 
 COOKIE = {}
-with open(os.path.join(DATA_DIR, "target", "cookie.txt"), 'r') as file_cookies:
+with open(os.path.join(DATA_DIR, "cookie.txt"), 'r') as file_cookies:
 	for line in file_cookies:
 		key, value = line.strip().split('=', 1)
 		COOKIE[key] = value
