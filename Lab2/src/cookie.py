@@ -14,9 +14,13 @@ driver.get(URL)
 print("Press `Enter` when you pass a captcha:", end="\n>> ")
 input()
 
-cookie = str(driver.execute_script("return document.cookie"))
-cookie = cookie.replace("; ", "\n")
+cookie = str(driver.execute_script("return document.cookie")).replace("; ", "\n")
 
-COOKIE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "dataset", "cookie.txt"))
-with open(COOKIE_PATH, 'w') as file:
+DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "dataset"))
+try:
+	os.makedirs(DATA_DIR)
+except FileExistsError:
+	pass
+
+with open(os.path.join(DATA_DIR, "cookie.txt"), 'w') as file:
 	file.write(cookie)
