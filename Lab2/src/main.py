@@ -99,7 +99,7 @@ def scrap(url: str, review_index: int, review_type: Literal["good", "bad"]):
 		
 		for review in reviews:
 			text = review.find('table').find('p').get_text()
-			file_path = os.path.join(DATA_DIR, review_type, f"{review_index:04d}.txt")
+			file_path = os.path.join(DATA_DIR, review_type, f"{review_index:04d}.txt")  # print("{:02d}".format(review_index))
 			with open(file_path, 'w', encoding="utf-8") as file:
 				file.write(f"{title_rus} ({title_eng})\n\n" + text)
 			review_index += 1
