@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from random import randint
 from fake_useragent import UserAgent
+from cookie import collect_cookies
 import requests
 import os
 import time
@@ -20,14 +21,23 @@ HEADER = {
 }
 
 COOKIE = {}
-with open(os.path.join(DATA_DIR, "cookie.txt"), 'r') as file_cookies:
-	for line in file_cookies:
-		key, value = line.strip().split('=', 1)
-		COOKIE[key] = value
+
+
+def read_cookies():
+	try:
+		with open(os.path.join(DATA_DIR, "cookie.txt"), 'r') as file_cookies:
+			for line in file_cookies:
+				key, value = line.strip().split('=', 1)
+				COOKIE[key] = value
+	except FileNotFoundError:
+		print('[WARN]: No such file: "dataset/cookie.txt"')
+		pass
+	return COOKIE
+
 
 session = requests.Session()
 session.headers.update(HEADER)
-session.cookies.update(COOKIE)
+session.cookies.update(read_cookies())
 
 
 def redirect():
@@ -37,7 +47,8 @@ def redirect():
 
 
 # Amount of request retries if ran into captcha
-RETRY_MAX_AMOUNT = 3
+RETRY_SELF_MAX_AMOUNT = 3
+RETRY_USER_MAX_AMOUNT = 2
 
 # Delay between requests, seconds
 PAGE_DELAY = range(0, 1)
@@ -45,7 +56,8 @@ RETRY_DELAY = range(0, 4)
 
 review_index = 0
 page_index = 1
-retry_index = 0
+retry_self_index = 0
+retry_user_index = 0
 
 while True:
 	soup, status = redirect()
@@ -58,15 +70,23 @@ while True:
 	
 	title_rus_soup = soup.find('a', class_="breadcrumbs__link")
 	if not title_rus_soup:
-		retry_index += 1
-		print(f"[WARN]: Captcha at page #{page_index}, retrying ({retry_index}/{RETRY_MAX_AMOUNT})")
+		retry_self_index += 1
+		print(f"[WARN]: Captcha at page #{page_index}, retrying ({retry_self_index}/{RETRY_SELF_MAX_AMOUNT})")
 		time.sleep(randint(RETRY_DELAY.start, RETRY_DELAY.stop))
-		if retry_index < RETRY_MAX_AMOUNT:
+		if retry_self_index < RETRY_SELF_MAX_AMOUNT:
 			continue
 		else:
-			print(f"[ERROR]: Can't avoid captcha, shutting down")
-			break
-	retry_index = 0
+			if retry_user_index < RETRY_USER_MAX_AMOUNT:
+				retry_self_index = 0
+				retry_user_index += 1
+				print(f"[WARN]: Can't avoid captcha, please pass it manually ({retry_user_index}/{RETRY_USER_MAX_AMOUNT})")
+				collect_cookies()
+				session.cookies.update(read_cookies())
+				continue
+			else:
+				print("[ERROR]: Can't pass captcha, shutting down")
+				break
+	retry_self_index = 0
 	
 	title_rus = title_rus_soup.get_text()
 	title_eng = soup.find('div', class_='breadcrumbs__sub').get_text()
