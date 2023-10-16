@@ -1,6 +1,4 @@
 .idea/
 
-/Lab2/dataset/
+/Lab2/dataset/*
 !/Lab2/dataset/target/
-!/Lab2/dataset/target/*
-!/Lab2/dataset/target/**/*
