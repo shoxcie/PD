@@ -5,3 +5,4 @@
 !/Lab2/dataset/target/
 
 /Lab3/**/*.csv
+/Lab3/out/*
