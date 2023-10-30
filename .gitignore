@@ -1,4 +1,5 @@
 .idea/
+*.pyc
 
 /Lab2/dataset/*
 !/Lab2/dataset/target/
