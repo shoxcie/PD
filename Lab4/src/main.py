@@ -1,5 +1,7 @@
+import os
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import filedialog
 
 
 class AutoScrollbar(ttk.Scrollbar):
@@ -43,5 +45,18 @@ vsb = AutoScrollbar(
 	command=text.yview
 )
 text.configure(yscrollcommand=vsb.set)
+
+data_dir = tk.filedialog.askdirectory(initialdir=os.sep)
+print(data_dir)
+
+# filepath = tk.filedialog.askopenfilename(
+# 	initialdir="C:\\",
+# 	title="Select file",
+# 	filetypes=(
+# 		("jpeg files", "*.jpg"),
+# 		("all files", "*.*")
+# 	)
+# )
+# print(filepath)
 
 window.mainloop()
