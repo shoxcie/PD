@@ -13,24 +13,72 @@ class AutoScrollbar(ttk.Scrollbar):
 		ttk.Scrollbar.set(self, low, high)
 
 
-def gui():
+CFG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "cfg", "path.ini"))
+
+
+def read_ini():
+	data_dir = os.path.abspath(os.path.sep)
+	csv_dir = os.path.expanduser("~")
+	try:
+		with open(CFG_FILE, 'r') as file:
+			lines = (
+				file.readline().rstrip(),
+				file.readline().rstrip()
+			)
+			if os.path.exists(lines[0]):
+				data_dir = lines[0]
+			if os.path.exists(lines[1]):
+				csv_dir = lines[1]
+	except FileNotFoundError:
+		print("[LOG]: No .ini file found, using default paths")
+	except Exception as e:
+		print(f"[ERROR]: {e}")
+	finally:
+		return data_dir, csv_dir
+
+
+def write_ini(data_dir: str, csv_dir: str):
+	os.makedirs(os.path.dirname(CFG_FILE), exist_ok=True)
+	with open(CFG_FILE, 'w') as file:
+		file.write(f"{data_dir}\n{csv_dir}")
+
+
+def gui(data_init_dir, csv_init_dir):
+	def dataset_onclick():
+		data_dir = os.path.abspath(tk.filedialog.askdirectory(initialdir=data_init_dir, mustexist=True))
+		window.title(data_dir)
+		write_ini(data_dir, csv_init_dir)
+
+	def next_onclick():
+		pass
+	
+	def csv_onclick():
+		pass
+	
 	window = tk.Tk()
+	window.title(data_init_dir)
 	window.configure(background="black")
 	
 	controls_frame = tk.Frame(background="black")
 	controls_frame.pack()
 	
-	ttk.Label(
+	ttk.Button(
 		master=controls_frame,
-		text="Hello, Tkinter",
-		foreground="white",
-		background="black"
-	).pack(padx=10, pady=20, side=tk.LEFT)
+		text="Dataset",
+		command=dataset_onclick
+	).pack(padx=20, pady=20, side=tk.LEFT)
 	
 	ttk.Button(
 		master=controls_frame,
-		text="Click me"
-	).pack(padx=10, pady=20)
+		text="Next",
+		command=next_onclick
+	).pack(padx=20, pady=20, side=tk.LEFT)
+	
+	ttk.Button(
+		master=controls_frame,
+		text="Annotation",
+		command=csv_onclick
+	).pack(padx=20, pady=20, side=tk.LEFT)
 	
 	text = tk.Text(
 		background="black",
@@ -47,9 +95,6 @@ def gui():
 	)
 	text.configure(yscrollcommand=vsb.set)
 	
-	data_dir = tk.filedialog.askdirectory(initialdir=os.sep)
-	print(data_dir)
-	
 	# filepath = tk.filedialog.askopenfilename(
 	# 	initialdir="C:\\",
 	# 	title="Select file",
@@ -64,4 +109,5 @@ def gui():
 
 
 if __name__ == '__main__':
-	gui()
+	paths = read_ini()
+	gui(*paths)
