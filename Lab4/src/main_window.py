@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
+from typing import Literal
 
 
 class AutoScrollbar(ttk.Scrollbar):
@@ -49,7 +50,7 @@ def gui(data_init_dir, csv_init_dir):
 		window.title(data_dir)
 		write_ini(data_dir, csv_init_dir)
 
-	def next_onclick():
+	def next_onclick(class_name: Literal["good", "bad"]):
 		pass
 	
 	def csv_onclick():
@@ -64,14 +65,20 @@ def gui(data_init_dir, csv_init_dir):
 	
 	ttk.Button(
 		master=controls_frame,
-		text="Dataset",
+		text="Select Folder",
 		command=dataset_onclick
 	).pack(padx=20, pady=20, side=tk.LEFT)
 	
 	ttk.Button(
 		master=controls_frame,
-		text="Next",
-		command=next_onclick
+		text='Next "Good"',
+		command=lambda: next_onclick("good")
+	).pack(padx=20, pady=20, side=tk.LEFT)
+	
+	ttk.Button(
+		master=controls_frame,
+		text='Next "Bad"',
+		command=lambda: next_onclick("bad")
 	).pack(padx=20, pady=20, side=tk.LEFT)
 	
 	ttk.Button(
