@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 from typing import Literal
+from lab3_export import dataset
 
 
 class AutoScrollbar(ttk.Scrollbar):
@@ -45,19 +46,44 @@ def write_ini(data_dir: str, csv_dir: str):
 
 
 def gui(data_init_dir, csv_init_dir):
+	def switch_file(class_name: Literal["good", "bad"]):
+		text.delete("1.0", tk.END)
+		random_file = dataset.get_random_file(class_name)
+		if random_file:
+			with open(random_file, 'r', encoding="utf-8") as file:
+				text.insert(tk.END, file.read())
+				window.title(random_file)
+	
 	def dataset_onclick():
-		data_dir = os.path.abspath(tk.filedialog.askdirectory(initialdir=data_init_dir, mustexist=True))
+		data_init_dir = read_ini()[0]
+		data_dir = os.path.abspath(tk.filedialog.askdirectory(
+			initialdir=data_init_dir,
+			mustexist=True
+		))
 		window.title(data_dir)
-		write_ini(data_dir, csv_init_dir)
-
+		if dataset.load(data_dir):
+			write_ini(data_dir, csv_init_dir)
+		switch_file("good")
+	
 	def next_onclick(class_name: Literal["good", "bad"]):
-		pass
+		switch_file(class_name)
 	
 	def csv_onclick():
-		pass
+		csv_init_dir = read_ini()[1]
+		csv_file = os.path.abspath(tk.filedialog.asksaveasfilename(
+			initialdir=csv_init_dir,
+			initialfile="annotation",
+			defaultextension=".csv",
+			filetypes=(
+				("csv file", "*.csv"),
+				("all files", "*.*")
+			)
+		))
+		if dataset.create_annotation(csv_file):
+			write_ini(data_init_dir, os.path.dirname(csv_file))
 	
 	window = tk.Tk()
-	window.title(data_init_dir)
+	window.title("Select Dataset Folder")
 	window.configure(background="black")
 	
 	controls_frame = tk.Frame(background="black")
@@ -101,16 +127,6 @@ def gui(data_init_dir, csv_init_dir):
 		command=text.yview
 	)
 	text.configure(yscrollcommand=vsb.set)
-	
-	# filepath = tk.filedialog.askopenfilename(
-	# 	initialdir="C:\\",
-	# 	title="Select file",
-	# 	filetypes=(
-	# 		("jpeg files", "*.jpg"),
-	# 		("all files", "*.*")
-	# 	)
-	# )
-	# print(filepath)
 	
 	window.mainloop()
 
