@@ -9,3 +9,7 @@
 
 /Lab4/cfg/*
 /Lab4/dataset/*
+
+/Lab5/**/dist/*
+/Lab5/**/*.egg-info/*
+

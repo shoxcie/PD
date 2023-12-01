@@ -1,0 +1,18 @@
+[project]
+name = "movie_comment_parser"
+version = "0.0.1"
+authors = [
+  { name="Shoxcie", email="shoxcie@gmail.com" },
+]
+description = "A small example parser package"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/shoxcie/PD"
+Issues = "https://github.com/shoxcie/PD/issues"
