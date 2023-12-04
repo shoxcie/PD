@@ -5,7 +5,6 @@ This is a simple example parser package. It extracts:
 1. Russian title
 2. English title
 3. Year
-4. Comment text
 
 From dataset movie comments.
 
