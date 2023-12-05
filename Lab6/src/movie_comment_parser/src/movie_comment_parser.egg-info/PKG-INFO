@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: movie-comment-parser
+Version: 0.0.1
+Summary: A small example parser package
+Author-email: Shoxcie <shoxcie@gmail.com>
+Project-URL: Homepage, https://github.com/shoxcie/PD
+Project-URL: Issues, https://github.com/shoxcie/PD/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Movie Comment Parser
+
+This is a simple example parser package. It extracts:
+
+1. Russian title
+2. English title
+3. Year
+4. Comment text
+
+From dataset movie comments.
+
+---
+
+## Dataset structure:
+
+```markdown
+dataset/
+├── good/
+│   ├── 0000.txt
+│   ├── 0001.txt
+│   │   ...
+│   └── 0999.txt
+└── bad/
+    ├── 0000.txt
+    ├── 0001.txt
+    │   ...
+    └── 0999.txt
+```
+
+---
+
+## Comment example:
+
+> Один дома (Home Alone, 1990)
+> 
+> На мой взгляд, очень классная рождественская история, которая из года в год не надоедает. Ее очень любят показывать по Первому каналу на каждых новогодних каникулах. Приятно окунуться в атмосферу юмора вперемешку с сумбурным настроением праздников.
+>
+> За идею плюс, юмор хромает, но тоже плюс, за очарование Кевина (эх, тогда еще он был довольно милым) и прекрасно сыгранную роль плюс. Еще мне честно понравилась музыка, удачная подборка саундтреков. Да и преступники со своей роли идиотов справились на ура
+>
+> 8/10

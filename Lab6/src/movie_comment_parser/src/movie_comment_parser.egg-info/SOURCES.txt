@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+src/parser.py
+src/movie_comment_parser.egg-info/PKG-INFO
+src/movie_comment_parser.egg-info/SOURCES.txt
+src/movie_comment_parser.egg-info/dependency_links.txt
+src/movie_comment_parser.egg-info/top_level.txt
